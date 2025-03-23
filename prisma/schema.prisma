@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clerkId      String         @unique
+  email        String         @unique
+  firstname    String?        @unique
+  lastname     String?        @unique
+  createdAt    DateTime       @default(now())
+  automations  Automation[]
+  integrations Integrations[]
+  subscription Subscription?
+}
+
+model Subscription {
+  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String?           @unique @db.Uuid
+  createdAt  DateTime          @default(now())
+  plan       SUBSCRIPTION_PLAN @default(FREE)
+  updatedAt  DateTime          @default(now())
+  customerId String?           @unique
+  User       User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Integrations {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        INTEGRATIONS @default(INSTAGRAM)
+  createdAt   DateTime     @default(now())
+  userId      String?      @db.Uuid
+  token       String       @unique
+  expiresAt   DateTime?
+  instagramId String?      @unique
+  User        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Automation {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String    @default("Untitled")
+  createdAt DateTime  @default(now())
+  active    Boolean   @default(false)
+  userId    String?   @db.Uuid
+  User      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dms       Dms[]
+  keywords  Keyword[]
+  listener  Listener?
+  posts     Post[]
+  trigger   Trigger[]
+}
+
+model Dms {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  automationId String?     @db.Uuid
+  createdAt    DateTime    @default(now())
+  senderId     String?
+  reciever     String?
+  message      String?
+  Automation   Automation? @relation(fields: [automationId], references: [id])
+}
+
+model Post {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postid       String
+  caption      String?
+  media        String
+  mediaType    MEDIATYPE   @default(IMAGE)
+  automationId String?     @db.Uuid
+  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
+}
+
+model Listener {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  automationId String     @unique @db.Uuid
+  listener     LISTENERS  @default(MESSAGE)
+  prompt       String
+  commentReply String?
+  dmCount      Int        @default(0)
+  commentCount Int        @default(0)
+  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+}
+
+model Trigger {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type         String
+  automationId String?     @db.Uuid
+  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
+}
+
+model Keyword {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  word         String
+  automationId String?     @db.Uuid
+  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@unique([automationId, word])
+}
+
+enum SUBSCRIPTION_PLAN {
+  PRO
+  FREE
+}
+
+enum INTEGRATIONS {
+  INSTAGRAM
+}
+
+enum MEDIATYPE {
+  IMAGE
+  VIDEO
+  CAROSEL_ALBUM
+}
+
+enum LISTENERS {
+  SMARTAI
+  MESSAGE
+}
