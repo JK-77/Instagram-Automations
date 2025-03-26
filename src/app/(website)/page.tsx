@@ -46,11 +46,11 @@ export default function Home() {
           <div className="container px-4 py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center font-bold">
-                  li
+                <div className="h-10 w-12 rounded-lg bg-white flex items-center justify-center font-bold">
+                  <img src='Slide.png' ></img>
                 </div>
-                <span className="text-xl font-semibold text-primary-foreground">
-                  Slide
+                <span className="text-xl font-semibold text-primary-foreground bg-black text-white hover:bg-slate-900">
+                  
                 </span>
               </div>
               <nav className="hidden space-x-6 text-sm text-blue-200 md:block">
@@ -58,7 +58,7 @@ export default function Home() {
                 <Link href="#pricing">Pricing</Link>
                 <Link href="#about">About</Link>
               </nav>
-              <Button className="bg-white text-primary">
+              <Button className="bg-black text-primary">
                 <Link href="/dashboard">Login</Link>
               </Button>
             </div>

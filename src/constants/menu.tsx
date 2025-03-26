@@ -4,6 +4,7 @@ import {
   RocketDuoToneWhite,
   SettingsDuoToneWhite,
 } from '@/icons'
+import ViewReview from '@/icons/ViewReview'
 import { v4 as uuid } from 'uuid'
 
 export type FieldProps = {
@@ -36,4 +37,5 @@ export const SIDEBAR_MENU: SideBarProps[] = [
     label: 'settings',
     icon: <SettingsDuoToneWhite />,
   },
+  
 ]
