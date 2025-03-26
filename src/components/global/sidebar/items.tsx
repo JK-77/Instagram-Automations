@@ -30,7 +30,7 @@ const Items = ({ page, slug }: Props) => {
       ))}
 
       {/* Add Button at the End */}
-      <Link href="http://192.168.125.130:3000/api/checkmyreviews" >
+      <Link href="http://localhost:3000/api/checkmyreviews">
   <button className="flex items-center gap-3 px-3 py-2 text-[#9B9CA0] hover:text-white transition">
     <ViewReview /> {/* Your Icon Component */}
     <span className="text-md">Analytics</span>
