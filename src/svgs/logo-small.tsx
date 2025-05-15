@@ -18,12 +18,12 @@ export const LogoSmall = () => {
       <path
         d="M29.98 22.9948C33.7041 41.0907 45.869 46.2111 61.1018 43.7636"
         stroke="#AABBFF"
-        stroke-width="6.38743"
+        strokeWidth="6.38743"
       />
       <path
         d="M41.2124 25.9109C41.7282 28.558 44.102 34.4987 49.4707 37.0849"
         stroke="#AABBFF"
-        stroke-width="5.10995"
+        strokeWidth="5.10995"
       />
       <circle
         cx="41.0184"

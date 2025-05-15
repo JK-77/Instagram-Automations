@@ -1,4 +1,4 @@
-import { deepseekClient } from './../../../../../lib/deepseek'; // Import DeepSeek client
+import { genAI } from './../../../../../lib/gemini';
 import { findAutomation } from '@/actions/automations/queries'
 import {
   createChatHistory,
@@ -9,6 +9,7 @@ import {
   trackResponses,
 } from '@/actions/webhook/queries'
 import { sendDM, sendPrivateMessage } from '@/lib/fetch'
+import { openai } from '@/lib/openai'
 import { client } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -19,8 +20,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const webhook_payload = await req.json()
-  console.log("insta_payload", webhook_payload.entry[0].messaging);
-  let matcher;
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  console.log("insta_payload",webhook_payload.entry[0].messaging);
+  let matcher
   try {
     if (webhook_payload.entry[0].messaging) {
       matcher = await matchKeyword(
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
       matcher = await matchKeyword(
         webhook_payload.entry[0].changes[0].value.text
       )
-      console.log("matcher", matcher);
+      console.log("matcher",matcher);
     }
 
     if (matcher && matcher.automationId) {
@@ -70,30 +72,38 @@ export async function POST(req: NextRequest) {
             }
           }
 
-          console.log("Outside smart AI", automation.listener?.listener, automation);
+
+          console.log("Outside smart AI",automation.listener?.listener,automation);
           if (
             automation.listener &&
             automation.listener.listener === 'SMARTAI' &&
             automation.User?.subscription?.plan === 'PRO'
           ) {
+
             console.log("Inside Smart AI")
+            // const 
+            // const smart_ai_message = await openai.chat.completions.create({
+            //   model: 'gpt-4o',
+            //   messages: [
+            //     {
+            //       role: 'assistant',
+            //       content: `${automation.listener?.prompt}: Keep responses under 2 sentences`,
+            //     },
+            //   ],
+            // })
 
             const prompt = `${automation.listener?.prompt}: Keep responses under 2 sentences`;
+            const smart_ai_message_gemini = (await model.generateContent(prompt)).response.text();
 
-            // Call DeepSeek API
-            const deepseekResponse = await deepseekClient.post('', {
-              model: 'deepseek-chat', // Replace with the correct DeepSeek model name
-              messages: [
-                {
-                  role: 'user',
-                  content: prompt,
-                },
-              ],
-            });
+            // if (smart_ai_message.choices[0].message.content) {
+            //   const reciever = createChatHistory(
+            //     automation.id,
+            //     webhook_payload.entry[0].id,
+            //     webhook_payload.entry[0].messaging[0].sender.id,
+            //     webhook_payload.entry[0].messaging[0].message.text
+            //   )
 
-            const smart_ai_message = deepseekResponse.data.choices[0].message.content;
-
-            if (smart_ai_message) {
+            if (smart_ai_message_gemini) {
               const reciever = createChatHistory(
                 automation.id,
                 webhook_payload.entry[0].id,
@@ -101,19 +111,33 @@ export async function POST(req: NextRequest) {
                 webhook_payload.entry[0].messaging[0].message.text
               )
 
+              // const sender = createChatHistory(
+              //   automation.id,
+              //   webhook_payload.entry[0].id,
+              //   webhook_payload.entry[0].messaging[0].sender.id,
+              //   smart_ai_message.choices[0].message.content
+              // )
+
               const sender = createChatHistory(
                 automation.id,
                 webhook_payload.entry[0].id,
                 webhook_payload.entry[0].messaging[0].sender.id,
-                smart_ai_message
+                smart_ai_message_gemini
               )
 
               await client.$transaction([reciever, sender])
 
+              // const direct_message = await sendDM(
+              //   webhook_payload.entry[0].id,
+              //   webhook_payload.entry[0].messaging[0].sender.id,
+              //   smart_ai_message.choices[0].message.content,
+              //   automation.User?.integrations[0].token!
+              // )
+
               const direct_message = await sendDM(
                 webhook_payload.entry[0].id,
                 webhook_payload.entry[0].messaging[0].sender.id,
-                smart_ai_message,
+                smart_ai_message_gemini,
                 automation.User?.integrations[0].token!
               )
 
@@ -192,21 +216,21 @@ export async function POST(req: NextRequest) {
               automation.User?.subscription?.plan === 'PRO'
             ) {
               const prompt = `${automation.listener?.prompt}: keep responses under 2 sentences`;
+              const smart_ai_message_gemini = (await model.generateContent(prompt)).response.text();
 
-              // Call DeepSeek API
-              const deepseekResponse = await deepseekClient.post('', {
-                model: "deepseek-chat", // Replace with the correct DeepSeek model name
-                messages: [
-                  {
-                    role: 'user',
-                    content: prompt,
-                  },
-                ],
-              });
+              // const smart_ai_message = await openai.chat.completions.create({
+              //   model: 'gpt-4o',
+              //   messages: [
+              //     {
+              //       role: 'assistant',
+              //       content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
+              //     },
+              //   ],
+              // })
 
-              const smart_ai_message = deepseekResponse.data.choices[0].message.content;
 
-              if (smart_ai_message) {
+
+              if (smart_ai_message_gemini) {
                 const reciever = createChatHistory(
                   automation.id,
                   webhook_payload.entry[0].id,
@@ -218,7 +242,7 @@ export async function POST(req: NextRequest) {
                   automation.id,
                   webhook_payload.entry[0].id,
                   webhook_payload.entry[0].changes[0].value.from.id,
-                  smart_ai_message
+                  smart_ai_message_gemini
                 )
 
                 await client.$transaction([reciever, sender])
@@ -261,23 +285,44 @@ export async function POST(req: NextRequest) {
           automation?.User?.subscription?.plan === 'PRO' &&
           automation.listener?.listener === 'SMARTAI'
         ) {
-          // Call DeepSeek API
-          const deepseekResponse = await deepseekClient.post('', {
-            model: 'deepseek-chat', // Replace with the correct DeepSeek model name
-            messages: [
+          // const smart_ai_message = await openai.chat.completions.create({
+          //   model: 'gpt-4o',
+          //   messages: [
+          //     {
+          //       role: 'assistant',
+          //       content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
+          //     },
+          //     ...customer_history.history,
+          //     {
+          //       role: 'user',
+          //       content: webhook_payload.entry[0].messaging[0].message.text,
+          //     },
+          //   ],
+          // })
+
+
+          // Main chat function
+          console.log("\n=====History=====\n")
+          console.log(customer_history.history)
+          const smart_ai_message = (await model.generateContent({
+            contents: [
               {
                 role: 'assistant',
-                content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
+                parts: [{ text: `${automation.listener?.prompt}: keep responses under 2 sentences` }]
               },
               ...customer_history.history,
               {
                 role: 'user',
-                content: webhook_payload.entry[0].messaging[0].message.text,
-              },
-            ],
-          });
+                parts: [{ text: webhook_payload.entry[0].messaging[0].message.text }]
+              }
+            ]
+          })).response.text();
 
-          const smart_ai_message = deepseekResponse.data.choices[0].message.content;
+
+
+
+          const prompt = `${automation.listener?.prompt}: Keep responses under 2 sentences`;
+          const smart_ai_message_gemini = (await model.generateContent(prompt)).response.text();
 
           if (smart_ai_message) {
             const reciever = createChatHistory(
