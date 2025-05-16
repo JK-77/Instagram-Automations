@@ -3,7 +3,8 @@
 ![Slide Logo](https://img.shields.io/badge/built%20with-AI%20+%20Next.js-blueviolet)  
 _**A modern, intelligent, and affordable way to automate Instagram DMs and track engagement like a pro.**_
 
-🌐 [Live Demo / Presentation](https://instagram-automation.my.canva.site/)
+🌐 [Live Demo / Presentation](https://instagram-automation.my.canva.site/)  
+🏆 [Hackathon Achievement](https://drive.google.com/file/d/16Et12mNQJKPxmcEyldk3YAbAmsOGw2oA/view?usp=sharing)
 
 ---
 
@@ -16,7 +17,7 @@ _**A modern, intelligent, and affordable way to automate Instagram DMs and track
 ## ✨ Key Features
 
 - 🔁 **Automated DM/Comment Replies** via custom triggers
-- 🤖 **Gemini-Powered Smart Replies** trained on your brand’s products
+- 🤖 **Gemini-Powered Smart Replies** trained on your brand's products
 - 🧠 **Sentiment Detection with DistilBERT** (Positive, Neutral, Negative)
 - 📊 **Real-Time Analytics Dashboard**: KPIs, top DMs, user intent heatmap
 - 🧩 **Trigger/Response Builder** (No-code)
@@ -28,7 +29,7 @@ _**A modern, intelligent, and affordable way to automate Instagram DMs and track
 
 ## 🧠 Why Slide?
 
-> “Tired of repetitive Instagram DMs? Expensive chatbot tools? Slide gives you automation + analytics powered by AI — without burning your budget.”
+> "Tired of repetitive Instagram DMs? Expensive chatbot tools? Slide gives you automation + analytics powered by AI — without burning your budget."
 
 Unlike tools like ManyChat, Slide is designed for affordability and flexibility — especially for **Indian users and small teams**.
 
@@ -36,41 +37,50 @@ Unlike tools like ManyChat, Slide is designed for affordability and flexibility 
 
 ## 🏗️ Tech Stack
 
-| Layer        | Stack                           |
-|--------------|----------------------------------|
-| Frontend     | Next.js 14, Tailwind CSS         |
-| Backend/API  | Node.js, Express.js              |
-| Auth         | Clerk.dev                        |
-| ORM          | Prisma                           |
-| DB           | Neon (PostgreSQL)                |
-| AI Models    | Gemini (text-based replies), DistilBERT (sentiment) |
-| Deployment   | Vercel / Render / Railway        |
+<div align="center">
+
+### Frontend
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### Backend
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+
+### Database
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![Neon](https://img.shields.io/badge/Neon-00E59B?style=for-the-badge&logo=neon&logoColor=white)
+
+### AI Services
+![Gemini](https://img.shields.io/badge/Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![BERT](https://img.shields.io/badge/BERT-FF6F00?style=for-the-badge&logo=huggingface&logoColor=white)
+
+### Infrastructure
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![ngrok](https://img.shields.io/badge/ngrok-1F1E37?style=for-the-badge&logo=ngrok&logoColor=white)
+![Clerk](https://img.shields.io/badge/Clerk-000000?style=for-the-badge&logo=clerk&logoColor=white)
+
+### Payments
+![Lemon Squeezy](https://img.shields.io/badge/Lemon_Squeezy-000000?style=for-the-badge&logo=lemonsqueezy&logoColor=white)
+
+</div>
 
 ---
 
 ## 🧪 Use Case: UrbanStep (Shoe Brand Example)
 
 **Prompt to train Gemini:**
-> “You are UrbanStep’s DM assistant. Help users with sneakers, boots, loafers (UK 6–11) in colors like black, white, navy. Mention offers like FLAT10, locations in Mumbai, Pune, Indore. Payment via UPI, COD, or card. Suggest trending shoes. If size is unavailable, offer alternatives.”
-
----
-
-## 🔐 Authentication & Database
-
-- **User Auth**: Secured with [Clerk](https://clerk.dev)  
-  → Sign in with Google, GitHub, OTP, etc.  
-- **DB**: PostgreSQL hosted on [Neon](https://neon.tech)
-- **Schema**: Managed with Prisma ORM  
-  → Models: `User`, `Trigger`, `Message`, `Response`, `Feedback`, `AnalyticsEvent`
+> "You are UrbanStep's DM assistant. Help users with sneakers, boots, loafers (UK 6–11) in colors like black, white, navy. Mention offers like FLAT10, locations in Mumbai, Pune, Indore. Payment via UPI, COD, or card. Suggest trending shoes. If size is unavailable, offer alternatives."
 
 ---
 
 ## 🛠️ Installation
 
 ```bash
-git clone https://github.com/your-username/slide.git
-cd slide
+git clone https://github.com/JK-77/Instagram-Automations.git
 npm install
-npx prisma generate
-npx prisma migrate dev --name init
 npm run dev
